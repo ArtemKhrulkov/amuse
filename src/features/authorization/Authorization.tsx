@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Copyright from 'features/copyright/Copyright';
 import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
         : theme.palette.grey[900],
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+  },
+  localization: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   paper: {
     margin: theme.spacing(8, 4),
@@ -64,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Sign() {
+export default function Authorization() {
   const { t } = useTranslation();
   const classes = useStyles();
 
@@ -82,6 +88,15 @@ export default function Sign() {
         </Typography>
       </Grid>
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <div className={classes.localization}>
+          <Button color="primary" onClick={() => i18next.changeLanguage('ru')}>
+            RU
+          </Button>
+          /
+          <Button color="primary" onClick={() => i18next.changeLanguage('en')}>
+            EN
+          </Button>
+        </div>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
@@ -105,7 +120,7 @@ export default function Sign() {
                 variant="contained"
                 color="primary"
                 fullWidth
-                startIcon={<VK />}
+                startIcon={<VK color="white" />}
               >
                 {t('sign-in-with-vk')}
               </Button>
