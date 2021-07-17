@@ -17,6 +17,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Copyright from 'features/copyright/Copyright';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
+import { useAppDispatch } from '../../app/hooks';
+import { googleAuthAsync } from './authorizationSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Authorization() {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const classes = useStyles();
 
   return (
@@ -112,6 +115,7 @@ export default function Authorization() {
                 color="secondary"
                 fullWidth
                 startIcon={<Email />}
+                onClick={() => window.open('http://localhost:8000/auth/google/login', '_self')}
               >
                 {t('sign-in-with-gmail')}
               </Button>

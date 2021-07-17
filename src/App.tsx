@@ -23,8 +23,7 @@ function App() {
     <Router>
       <div className="App">
         <Switch>
-          <Route exact path="/" render={AuthorizationPage} />
-          <Redirect to="/" />
+          <Route exact path="/auth" render={AuthorizationPage} />
         </Switch>
       </div>
     </Router>
