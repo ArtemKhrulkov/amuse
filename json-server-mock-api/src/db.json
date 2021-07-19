@@ -1,0 +1,19 @@
+{
+  "success": {
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkMTdkYjU5YWMyMTE0YzJiYjQ1OWY4OTdkYzViYmViOCIsImV4cCI6MTYyMzUxNjkwNS44MDc2MX0.ugdFvSyBgRSd8f8fRk4kefw0pSxAuvM9-beOka9tdBI",
+    "refresh_token": {
+      "sub": "c124cc30-2a2d-495c-b210-48e43b82af6b",
+      "exp": "2021-09-21"
+    }
+  },
+  "refresh-token": {
+    "token": "fdK343FGJJGVMMQliOdfB034dd.eyJzdWIiOiJkMTdkYjU5YWMyMTE0YzJiYjQ1OWY4OTdkYzViYmViOCIsImV4cCI6MTYyMzUxNjkwNS44MDc2MX0.dbb$34FDAXvvK2wdsd-beOka9tdBI",
+    "refresh_token": {
+      "sub": "b132vv22-2a2d-555c-d200-48e45g82af6b",
+      "exp": "2021-10-21"
+    }
+  },
+  "login": {
+    "auth": true
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "/api/auth/google/*": "/$1",
+  "/api/auth/*": "/$1"
+}

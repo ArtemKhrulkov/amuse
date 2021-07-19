@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -13,66 +13,36 @@ import Instagram from '@material-ui/icons/Instagram';
 import Email from '@material-ui/icons/Email';
 import VK from './icons/VK';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Copyright from 'features/copyright/Copyright';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100vh',
-  },
-  image: {
-    backgroundImage: 'url(https://source.unsplash.com/featured/?music,guitar)',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor:
-      theme.palette.type === 'light'
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  localization: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  header: {
-    margin: theme.spacing(5),
-    color: 'white',
-    textShadow: '5px 5px 8px #000',
-  },
-  socials: {
-    margin: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+import { useStyles } from './Authorization.styles';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import {
+  selectAccessToken,
+  selectTokenExpiryDate,
+  setGoogleTokensAsync,
+} from './authorizationSlice';
+import { goToServiceSSO } from 'utils/goToServiceSSO';
 
 export default function Authorization() {
   const { t } = useTranslation();
+  const accessToken = useAppSelector(selectAccessToken);
+  const expireDate = useAppSelector(selectTokenExpiryDate);
+  const dispatch = useAppDispatch();
   const classes = useStyles();
+
+  const authTokens = () => dispatch(setGoogleTokensAsync());
+
+  useEffect(() => {
+    console.log(accessToken);
+    console.log(expireDate);
+  }, [accessToken, expireDate]);
+
+  const redirectToGoogleSSO = goToServiceSSO(
+    'api/auth/google/login',
+    authTokens
+  );
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -112,6 +82,7 @@ export default function Authorization() {
                 color="secondary"
                 fullWidth
                 startIcon={<Email />}
+                onClick={() => redirectToGoogleSSO()}
               >
                 {t('sign-in-with-gmail')}
               </Button>
