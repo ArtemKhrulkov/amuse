@@ -1,11 +1,16 @@
 const myHeaders = new Headers({ 'Content-Type': 'application/json' });
-export async function googleAuth() {
-  const response = await fetch('/auth/google/login', {
+export async function getGoogleTokens() {
+  const response = await fetch('api/auth/google/success', {
     method: 'GET',
     headers: myHeaders,
   });
-  const data = await response.json();
-  console.log(data);
+  return await response.json();
+}
 
-  return data;
+export async function refreshGoogleTokens() {
+  const response = await fetch('api/auth/refresh-token', {
+    method: 'GET',
+    headers: myHeaders,
+  });
+  return await response.json();
 }
