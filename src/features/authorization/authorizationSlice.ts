@@ -1,19 +1,24 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
-import { getGoogleTokens, refreshGoogleTokens } from './authorizationAPI';
+import {
+  getGoogleTokens,
+  logout,
+  myHeaders,
+  refreshGoogleTokens,
+} from './authorizationAPI';
 
 interface AuthorizationState {
   loggedIn: boolean;
-  accessToken: string;
-  refreshToken: string;
-  tokenExpiryDate: string;
+  loading: boolean;
+  accessToken: string | null;
+  refreshToken: string | null;
 }
 
 const initialState: AuthorizationState = {
   loggedIn: false,
-  accessToken: '',
-  refreshToken: '',
-  tokenExpiryDate: '',
+  loading: false,
+  accessToken: null,
+  refreshToken: null,
 };
 
 export const setGoogleTokensAsync = createAsyncThunk(
@@ -30,6 +35,13 @@ export const refreshGoogleTokensAsync = createAsyncThunk(
   }
 );
 
+export const logoutAsync = createAsyncThunk(
+  'authorization/logout',
+  async () => {
+    return await logout();
+  }
+);
+
 export const authorizationSlice = createSlice({
   name: 'authorization',
   initialState,
@@ -40,44 +52,61 @@ export const authorizationSlice = createSlice({
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
-    setRefreshToken: (state, action: PayloadAction<string>) => {
-      state.refreshToken = action.payload;
-    },
-    setTokenExpiryDate: (state, action: PayloadAction<string>) => {
-      state.tokenExpiryDate = action.payload;
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(setGoogleTokensAsync.pending, (state) => {
+        state.loading = true;
         state.loggedIn = false;
       })
       .addCase(setGoogleTokensAsync.fulfilled, (state, action) => {
+        state.loading = false;
         state.loggedIn = true;
         state.accessToken = action.payload.token;
-        state.refreshToken = action.payload.refresh_token.sub;
-        state.tokenExpiryDate = action.payload.refresh_token.exp;
+        myHeaders.append('Authorization', `Bearer ${state.accessToken}`);
       })
-      .addCase(refreshGoogleTokensAsync.pending, (state) => {
-        state.loggedIn = false;
+      .addCase(refreshGoogleTokensAsync.pending, (state, action) => {
+        state.loading = true;
       })
       .addCase(refreshGoogleTokensAsync.fulfilled, (state, action) => {
+        state.loading = false;
         state.loggedIn = true;
         state.accessToken = action.payload.token;
-        state.refreshToken = action.payload.refresh_token.sub;
-        state.tokenExpiryDate = action.payload.refresh_token.exp;
+        myHeaders.delete('Authorization');
+        myHeaders.append('Authorization', `Bearer ${state.accessToken}`);
+      })
+      .addCase(refreshGoogleTokensAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.loggedIn = false;
+      })
+      .addCase(logoutAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(logoutAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.loggedIn = false;
+        state.accessToken = null;
+        myHeaders.delete('Authorization');
+      })
+      .addCase(logoutAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.loggedIn = false;
+        state.accessToken = null;
+        myHeaders.delete('Authorization');
       });
   },
 });
 
-export const { setLoggedIn, setAccessToken, setTokenExpiryDate } =
+export const { setLoggedIn, setAccessToken, setLoading } =
   authorizationSlice.actions;
 
 export const selectIsLoggedIn = (state: RootState) =>
   state.authorization.loggedIn;
 export const selectAccessToken = (state: RootState) =>
   state.authorization.accessToken;
-export const selectTokenExpiryDate = (state: RootState) =>
-  state.authorization.tokenExpiryDate;
+export const selectLoading = (state: RootState) => state.authorization.loading;
 
 export default authorizationSlice.reducer;

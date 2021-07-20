@@ -10,10 +10,12 @@ import {
   Redirect,
 } from 'react-router-dom';
 import './i18n';
+import { CircularProgress } from '@material-ui/core';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import {
   refreshGoogleTokensAsync,
   selectIsLoggedIn,
+  selectLoading,
 } from 'features/authorization/authorizationSlice';
 
 function AuthorizationPage() {
@@ -33,13 +35,16 @@ function HomePage() {
 }
 
 function App() {
-  const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const loading = useAppSelector(selectLoading);
+  const dispatch = useAppDispatch();
   const authTokens = () => dispatch(refreshGoogleTokensAsync());
 
   useLayoutEffect(() => {
     authTokens();
   }, []);
+
+  if (loading) return <CircularProgress />;
 
   return (
     <Router>

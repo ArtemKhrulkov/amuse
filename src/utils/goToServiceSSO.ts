@@ -1,5 +1,5 @@
-export function goToServiceSSO(url: string, cb: Function): Function {
-  return function () {
+export const goToServiceSSO = (url: string, cb: Function): Function => {
+  return () => {
     let timer: NodeJS.Timeout | null = null;
     const serviceLoginURL =
       process.env.NODE_ENV === 'development'
@@ -20,4 +20,4 @@ export function goToServiceSSO(url: string, cb: Function): Function {
       }, 500);
     }
   };
-}
+};
