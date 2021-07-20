@@ -17,27 +17,16 @@ import Copyright from 'features/copyright/Copyright';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import { useStyles } from './Authorization.styles';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import {
-  selectAccessToken,
-  selectTokenExpiryDate,
-  setGoogleTokensAsync,
-} from './authorizationSlice';
+import { useAppDispatch } from 'app/hooks';
+import { setGoogleTokensAsync } from './authorizationSlice';
 import { goToServiceSSO } from 'utils/goToServiceSSO';
 
 export default function Authorization() {
   const { t } = useTranslation();
-  const accessToken = useAppSelector(selectAccessToken);
-  const expireDate = useAppSelector(selectTokenExpiryDate);
   const dispatch = useAppDispatch();
   const classes = useStyles();
 
   const authTokens = () => dispatch(setGoogleTokensAsync());
-
-  useEffect(() => {
-    console.log(accessToken);
-    console.log(expireDate);
-  }, [accessToken, expireDate]);
 
   const redirectToGoogleSSO = goToServiceSSO(
     'api/auth/google/login',
