@@ -3,9 +3,9 @@ import { RootState } from 'app/store';
 import {
   getGoogleTokens,
   logout,
-  myHeaders,
   refreshGoogleTokens,
 } from './authorizationAPI';
+import { api } from 'utils/api';
 
 interface AuthorizationState {
   loggedIn: boolean;
@@ -66,36 +66,40 @@ export const authorizationSlice = createSlice({
         state.loading = false;
         state.loggedIn = true;
         state.accessToken = action.payload.token;
-        myHeaders.append('Authorization', `Bearer ${state.accessToken}`);
+        api.jwt(action.payload.token);
       })
-      .addCase(refreshGoogleTokensAsync.pending, (state, action) => {
+      .addCase(setGoogleTokensAsync.rejected, (state) => {
+        state.loading = false;
+        state.loggedIn = false;
+        api.jwt();
+      })
+      .addCase(refreshGoogleTokensAsync.pending, (state) => {
         state.loading = true;
       })
       .addCase(refreshGoogleTokensAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.loggedIn = true;
         state.accessToken = action.payload.token;
-        myHeaders.delete('Authorization');
-        myHeaders.append('Authorization', `Bearer ${state.accessToken}`);
+        api.jwt(action.payload.token);
       })
-      .addCase(refreshGoogleTokensAsync.rejected, (state, action) => {
+      .addCase(refreshGoogleTokensAsync.rejected, (state) => {
         state.loading = false;
         state.loggedIn = false;
       })
-      .addCase(logoutAsync.pending, (state, action) => {
+      .addCase(logoutAsync.pending, (state) => {
         state.loading = true;
       })
-      .addCase(logoutAsync.fulfilled, (state, action) => {
+      .addCase(logoutAsync.fulfilled, (state) => {
         state.loading = false;
         state.loggedIn = false;
         state.accessToken = null;
-        myHeaders.delete('Authorization');
+        api.jwt();
       })
-      .addCase(logoutAsync.rejected, (state, action) => {
+      .addCase(logoutAsync.rejected, (state) => {
         state.loading = false;
         state.loggedIn = false;
         state.accessToken = null;
-        myHeaders.delete('Authorization');
+        api.jwt();
       });
   },
 });

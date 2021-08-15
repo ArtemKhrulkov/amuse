@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 
 import Authorization from 'features/authorization/Authorization';
 import Home from 'features/home/Home';
@@ -38,11 +38,15 @@ function App() {
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const loading = useAppSelector(selectLoading);
   const dispatch = useAppDispatch();
-  const authTokens = () => dispatch(refreshGoogleTokensAsync());
+
+  const authTokens = useCallback(
+    () => dispatch(refreshGoogleTokensAsync()),
+    [dispatch]
+  );
 
   useLayoutEffect(() => {
     authTokens();
-  }, []);
+  }, [authTokens]);
 
   if (loading) return <CircularProgress />;
 
