@@ -1,54 +1,58 @@
-import { makeStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 
-export const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100vh',
-  },
-  image: {
-    backgroundImage:
-      'url(https://source.unsplash.com/featured/?music,musician)',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor:
-      theme.palette.type === 'light'
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  localization: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  header: {
-    margin: theme.spacing(5),
-    color: 'white',
-    textShadow: '5px 5px 8px #000',
-  },
-  socials: {
-    margin: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+export const Root = styled.div`
+  .root {
+    height: 100vh;
+  }
+
+  .image {
+    background-image: url(https://source.unsplash.com/featured/?music,musician,guitar);
+    background-repeat: no-repeat;
+    background-color: ${(props) =>
+      props.theme.palette.type === 'light'
+        ? props.theme.palette.grey[50]
+        : props.theme.palette.grey[900]};
+    background-size: cover;
+    background-position: center;
+  }
+
+  .header {
+    margin: ${(props) => props.theme.spacing(5)}px;
+    color: white;
+    text-shadow: 5px 5px 8px #000;
+  }
+`;
+
+export const SLocalization = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+export const SPaper = styled.div`
+  display: flex;
+  margin: ${(props) => props.theme.spacing(8, 4)};
+  flex-direction: column;
+  align-items: center;
+
+  .avatar {
+    margin: ${(props) => props.theme.spacing(1)}px;
+    background-color: ${(props) => props.theme.palette.secondary.main};
+  }
+`;
+
+export const SForm = styled.form`
+  width: 100%; /* Fix IE 11 issue. */
+  margin-top: ${(props) => props.theme.spacing(1)}px;
+
+  .socials {
+    margin: ${(props) => props.theme.spacing(2)}px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .button {
+    margin: ${(props) => props.theme.spacing(1)}px;
+  }
+`;
