@@ -11,14 +11,12 @@ interface AuthorizationState {
   loggedIn: boolean;
   loading: boolean;
   accessToken: string | null;
-  refreshToken: string | null;
 }
 
 const initialState: AuthorizationState = {
   loggedIn: false,
   loading: false,
   accessToken: null,
-  refreshToken: null,
 };
 
 export const setGoogleTokensAsync = createAsyncThunk(
@@ -49,9 +47,6 @@ export const authorizationSlice = createSlice({
     setLoggedIn: (state, action: PayloadAction<boolean>) => {
       state.loggedIn = action.payload;
     },
-    setAccessToken: (state, action: PayloadAction<string>) => {
-      state.accessToken = action.payload;
-    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -66,6 +61,7 @@ export const authorizationSlice = createSlice({
         state.loading = false;
         state.loggedIn = true;
         state.accessToken = action.payload.token;
+        console.log(state.accessToken);
         api.jwt(action.payload.token);
       })
       .addCase(setGoogleTokensAsync.rejected, (state) => {
@@ -80,11 +76,13 @@ export const authorizationSlice = createSlice({
         state.loading = false;
         state.loggedIn = true;
         state.accessToken = action.payload.token;
+        console.log(action.payload.token);
         api.jwt(action.payload.token);
       })
       .addCase(refreshGoogleTokensAsync.rejected, (state) => {
         state.loading = false;
         state.loggedIn = false;
+        api.jwt();
       })
       .addCase(logoutAsync.pending, (state) => {
         state.loading = true;
@@ -104,13 +102,10 @@ export const authorizationSlice = createSlice({
   },
 });
 
-export const { setLoggedIn, setAccessToken, setLoading } =
-  authorizationSlice.actions;
+export const { setLoggedIn, setLoading } = authorizationSlice.actions;
 
 export const selectIsLoggedIn = (state: RootState) =>
   state.authorization.loggedIn;
-export const selectAccessToken = (state: RootState) =>
-  state.authorization.accessToken;
 export const selectLoading = (state: RootState) => state.authorization.loading;
 
 export default authorizationSlice.reducer;
