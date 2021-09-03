@@ -39,14 +39,14 @@ function App() {
   const loading = useAppSelector(selectLoading);
   const dispatch = useAppDispatch();
 
-  const authTokens = useCallback(
+  const getAuthTokens = useCallback(
     () => dispatch(refreshGoogleTokensAsync()),
     [dispatch]
   );
 
   useLayoutEffect(() => {
-    authTokens();
-  }, [authTokens]);
+    getAuthTokens();
+  }, [getAuthTokens]);
 
   if (loading) return <CircularProgress />;
 
