@@ -1,31 +1,31 @@
-import { api } from 'utils/api';
-
-export async function getGoogleTokens() {
-  const response = await api.get('api/auth/google/success');
-
-  if (response.ok) {
-    return response.body;
-  }
-
-  throw Error(response.err);
-}
+import { http } from 'utils/api';
 
 export async function refreshGoogleTokens() {
-  const response = await api.get('api/auth/refresh-token');
+  const response = await http.get('api/auth/refresh-token');
 
-  if (response.ok) {
-    return response.body;
+  if (response.statusText === 'OK') {
+    return response.data;
   }
 
-  throw Error(response.err);
+  throw Error(response.data.detail);
+}
+
+export async function getCurrentUser() {
+  const response = await http.get('api/user/self');
+
+  if (response.statusText === 'OK') {
+    return response.data;
+  }
+
+  throw Error(response.data.detail);
 }
 
 export async function logout() {
-  const response = await api.get('api/auth/logout');
+  const response = await http.get('api/auth/logout');
 
-  if (response.ok) {
-    return response.body;
+  if (response.statusText === 'OK') {
+    return response.data;
   }
 
-  throw Error(response.err);
+  throw Error(response.data.detail);
 }

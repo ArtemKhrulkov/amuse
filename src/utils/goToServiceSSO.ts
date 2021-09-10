@@ -1,4 +1,4 @@
-export const goToServiceSSO = (url: string, cb: Function): Function => {
+export const goToServiceSSO = (url: string): Function => {
   return () => {
     //let timer: NodeJS.Timeout | null = null;
     const serviceLoginURL =
