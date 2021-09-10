@@ -2,11 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { store } from './app/store';
+import { store } from 'app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { createTheme } from '@material-ui/core';
 import { ThemeProvider } from 'styled-components';
+import { setupInterceptors } from 'utils/api';
 
 const theme = createTheme();
 
@@ -20,6 +21,8 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+setupInterceptors(store);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -1,30 +1,26 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 import {
-  getGoogleTokens,
+  getCurrentUser,
   logout,
   refreshGoogleTokens,
 } from './authorizationAPI';
-import { api } from 'utils/api';
+import { http } from 'utils/api';
+import { User } from 'types/common';
 
 interface AuthorizationState {
   loggedIn: boolean;
   loading: boolean;
   accessToken: string | null;
+  user: User | null;
 }
 
 const initialState: AuthorizationState = {
   loggedIn: false,
   loading: false,
   accessToken: null,
+  user: null,
 };
-
-export const setGoogleTokensAsync = createAsyncThunk(
-  'authorization/getGoogleTokens',
-  async () => {
-    return await getGoogleTokens();
-  }
-);
 
 export const refreshGoogleTokensAsync = createAsyncThunk(
   'authorization/refreshGoogleTokens',
@@ -37,6 +33,13 @@ export const logoutAsync = createAsyncThunk(
   'authorization/logout',
   async () => {
     return await logout();
+  }
+);
+
+export const getCurrentUserAsync = createAsyncThunk(
+  'authorization/getCurrentUser',
+  async () => {
+    return await getCurrentUser();
   }
 );
 
@@ -53,22 +56,6 @@ export const authorizationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(setGoogleTokensAsync.pending, (state) => {
-        state.loading = true;
-        state.loggedIn = false;
-      })
-      .addCase(setGoogleTokensAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.loggedIn = true;
-        state.accessToken = action.payload.token;
-        console.log(state.accessToken);
-        api.jwt(action.payload.token);
-      })
-      .addCase(setGoogleTokensAsync.rejected, (state) => {
-        state.loading = false;
-        state.loggedIn = false;
-        api.jwt();
-      })
       .addCase(refreshGoogleTokensAsync.pending, (state) => {
         state.loading = true;
       })
@@ -76,13 +63,17 @@ export const authorizationSlice = createSlice({
         state.loading = false;
         state.loggedIn = true;
         state.accessToken = action.payload.token;
-        console.log(action.payload.token);
-        api.jwt(action.payload.token);
+        http.defaults.headers.common[
+          'Authorization'
+        ] = `Bearer ${action.payload.token}`;
       })
       .addCase(refreshGoogleTokensAsync.rejected, (state) => {
         state.loading = false;
         state.loggedIn = false;
-        api.jwt();
+        delete http.defaults.headers.common['Authorization'];
+      })
+      .addCase(getCurrentUserAsync.fulfilled, (state, action) => {
+        state.user = action.payload;
       })
       .addCase(logoutAsync.pending, (state) => {
         state.loading = true;
@@ -91,13 +82,13 @@ export const authorizationSlice = createSlice({
         state.loading = false;
         state.loggedIn = false;
         state.accessToken = null;
-        api.jwt();
+        delete http.defaults.headers.common['Authorization'];
       })
       .addCase(logoutAsync.rejected, (state) => {
         state.loading = false;
         state.loggedIn = false;
         state.accessToken = null;
-        api.jwt();
+        delete http.defaults.headers.common['Authorization'];
       });
   },
 });
@@ -107,5 +98,6 @@ export const { setLoggedIn, setLoading } = authorizationSlice.actions;
 export const selectIsLoggedIn = (state: RootState) =>
   state.authorization.loggedIn;
 export const selectLoading = (state: RootState) => state.authorization.loading;
+export const selectUser = (state: RootState) => state.authorization.user;
 
 export default authorizationSlice.reducer;

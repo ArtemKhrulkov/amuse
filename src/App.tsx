@@ -11,7 +11,7 @@ import {
 } from 'react-router-dom';
 import './i18n';
 import { CircularProgress } from '@material-ui/core';
-import { useAppDispatch, useAppSelector } from './app/hooks';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
 import {
   refreshGoogleTokensAsync,
   selectIsLoggedIn,

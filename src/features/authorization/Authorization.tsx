@@ -16,20 +16,12 @@ import i18next from 'i18next';
 import Copyright from 'features/copyright/Copyright';
 import VK from './icons/VK';
 import { Root, SForm, SLocalization, SPaper } from './Authorization.styles';
-import { useAppDispatch } from 'app/hooks';
-import { setGoogleTokensAsync } from './authorizationSlice';
 import { goToServiceSSO } from 'utils/goToServiceSSO';
 
 export default function Authorization() {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
-  const authTokens = () => dispatch(setGoogleTokensAsync());
-
-  const redirectToGoogleSSO = goToServiceSSO(
-    'api/auth/google/login',
-    authTokens
-  );
+  const redirectToGoogleSSO = goToServiceSSO('api/auth/google/login');
 
   return (
     <Root>
