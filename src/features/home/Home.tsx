@@ -1,16 +1,11 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Button } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { useHistory } from 'react-router-dom';
 import mapboxgl, { Map } from 'mapbox-gl';
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import {
@@ -62,20 +57,15 @@ export default function Home() {
         setZoom(stringsToNumber(map.current.getZoom().toFixed(2)));
       }
     });
-  }, []);
-
-  useLayoutEffect(() => {
-    if (map.current) {
-      mapboxgl.setRTLTextPlugin(
-        'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-        (error) => console.log(error)
-      );
-      map.current.addControl(
-        new MapboxLanguage({
-          defaultLanguage: 'ru',
-        })
-      );
-    }
+    mapboxgl.setRTLTextPlugin(
+      'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+      (error) => console.log(error)
+    );
+    map.current?.addControl(
+      new MapboxLanguage({
+        defaultLanguage: 'ru',
+      })
+    );
   }, []);
 
   return (
